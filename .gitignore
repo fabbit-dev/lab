@@ -1,0 +1,7 @@
+node_modules
+dist
+art/out/
+__pycache__/
+.DS_Store
+.claude/
+.env*.local

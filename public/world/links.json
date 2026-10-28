@@ -1,0 +1,20 @@
+[
+  {
+    "file": "bunny-pumpkin.png",
+    "title": "Кролик в тыкве",
+    "size": "32×32",
+    "link": "https://lab.fabbit.dev/"
+  },
+  {
+    "file": "fabbit-desk.png",
+    "title": "Стол Fabbit",
+    "size": "96×64",
+    "link": "https://lab.fabbit.dev/"
+  },
+  {
+    "file": "fabbit-poster.png",
+    "title": "Постер Fabbit",
+    "size": "64×64",
+    "link": "https://fabbit.dev/"
+  }
+]
