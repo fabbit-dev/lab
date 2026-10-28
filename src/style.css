@@ -135,7 +135,7 @@ main { display: grid; gap: var(--gap-page); }
 .figure > figcaption { display: grid; gap: var(--gap-tight); justify-items: center; text-align: center; }
 .device, .board { position: relative; width: calc(82px * var(--k-art, var(--k))); }
 .device > img, .board > img { display: block; width: 100%; height: auto; }
-.device__screen { position: absolute; }
+.device__screen { position: absolute; touch-action: none; user-select: none; -webkit-user-select: none; }
 .hint { color: var(--rust); }
 .note { color: var(--text-2); }
 
