@@ -49,9 +49,9 @@ export function uartTrack(text = MESSAGE) {
 
 // ── ретро: кролик прыгает через тыквы ──
 export const GROUND = 44; // нижний ряд кролика и тыквы
-const GRAVITY = 300; // пикс/с²
-const JUMP = -110; // пикс/с: высота прыжка 20 px, макушка не заходит на счёт
-const SPEED = 36; // пикс/с
+const GRAVITY = 220; // пикс/с²: мягкий прыжок, 0,77 с в воздухе
+const JUMP = -88; // пикс/с: высота 17 px, почти втрое выше тыквы
+export const SPEED = 32; // пикс/с
 const BUNNY_X = 6;
 
 export function createRunner() {
@@ -64,13 +64,13 @@ export function jump(r) {
 
 // Столкновение по пикселям: общий закрашенный пиксель у кролика и тыквы.
 export function collides(r, o) {
-  const by = GROUND - LOGO_BUNNY.length + 1 + Math.round(r.y);
-  const py = GROUND - PUMPKIN.length + 1;
+  const by = GROUND - GAME_BUNNY.length + 1 + Math.round(r.y);
+  const py = GROUND - HIT.length + 1;
   const ox = Math.round(o.x);
-  for (let j = 0; j < PUMPKIN.length; j++)
-    for (let i = 0; i < PUMPKIN[j].length; i++) {
-      if (PUMPKIN[j][i] !== '#') continue;
-      const row = LOGO_BUNNY[py + j - by];
+  for (let j = 0; j < HIT.length; j++)
+    for (let i = 0; i < HIT[j].length; i++) {
+      if (HIT[j][i] !== '#') continue;
+      const row = GAME_BUNNY[py + j - by];
       if (row && row[ox + i - BUNNY_X] === '#') return true;
     }
   return false;
@@ -104,7 +104,7 @@ export function stepRunner(r, dt, rand = Math.random) {
 }
 
 // Кролик с лого fabbit.dev (public/img/logo.svg), 16×19: левое ухо прямое, правое к центру,
-// глаза и рот прорезаны. На заставке и в игре без изменений.
+// глаза и рот прорезаны. На заставке без изменений, в игре уменьшенный GAME_BUNNY.
 export const LOGO_BUNNY = [
   '.###.......###..',
   '.###.......###..',
@@ -126,8 +126,27 @@ export const LOGO_BUNNY = [
   '..############..',
   '..############..',
 ];
+// Кролик для игры: лого, уменьшенное до 10×12. Левое ухо прямое, правое к центру,
+// глаза и рот на тех же местах. Крупный кролик 16×19 почти не перепрыгивал тыквы.
+export const GAME_BUNNY = [
+  '.##....##.',
+  '.##...###.',
+  '.##...###.',
+  '.##..###..',
+  '.##.###...',
+  '.#######..',
+  '.########.',
+  '##########',
+  '##.####.##',
+  '##########',
+  '####..####',
+  '.########.',
+];
+
 // Тыква 7×6: черенок и круглые бока, низ на земле.
 const PUMPKIN = ['...#...', '.#####.', '#######', '#######', '#######', '.#####.'];
+// Зона удара тыквы: без черенка и крайних пикселей, задеть их краем лапы не обидно.
+const HIT = ['.......', '..###..', '.#####.', '.#####.', '.#####.', '.......'];
 
 export function createScreen(canvas) {
   canvas.width = W;
@@ -227,7 +246,7 @@ export function createScreen(canvas) {
     for (let x = (W - Math.floor(clock * SPEED) % 6) - 6; x < W; x += 6) plot(x, GROUND + 3, COLORS.dim);
     for (const o of runner.obstacles) sprite(PUMPKIN, Math.round(o.x), GROUND - PUMPKIN.length + 1, COLORS.orange);
     const blink = runner.hit > 0 && Math.floor(runner.hit * 8) % 2;
-    if (!blink) sprite(LOGO_BUNNY, BUNNY_X, GROUND - LOGO_BUNNY.length + 1 + Math.round(runner.y), COLORS.white);
+    if (!blink) sprite(GAME_BUNNY, BUNNY_X, GROUND - GAME_BUNNY.length + 1 + Math.round(runner.y), COLORS.white);
     textRight(String(runner.score), 1, COLORS.fg);
     text(runner.hit > 0 ? 'OUCH' : 'HOP', 1, 1, COLORS.dim);
   }
