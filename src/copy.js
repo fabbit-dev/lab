@@ -1,6 +1,7 @@
 // Тексты интерактивных частей страницы. Статичные тексты в index.html.
 // Факты о приборе: ~/fabbit/README.md и fabbit.dev (src/profiles.js, src/build/parts.js).
-const nb = (s) => s.replace(/(\d) (?=[а-яА-Яa-zA-Z])/g, '$1\u00a0');
+// Неразрывный пробел между числом и единицей, диапазон «3–9» не переносится.
+const nb = (s) => s.replace(/(\d) (?=[а-яА-Яa-zA-Z])/g, '$1\u00a0').replace(/(\d)–(\d)/g, '$1\u2060–\u2060$2');
 
 export const MODES = {
   scope: {

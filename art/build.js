@@ -41,8 +41,9 @@ async function main() {
   await writeFile(path.join(world, 'links.json'), JSON.stringify(links, null, 2) + '\n');
   const img = path.join(root, 'public/img');
   await mkdir(img, { recursive: true });
-  for (const { name, sprite } of await loadSprites('page')) {
+  for (const { name, sprite, scales = [] } of await loadSprites('page')) {
     await writeFile(path.join(img, `${name}.png`), sprite.png(1));
+    for (const k of scales) await writeFile(path.join(img, `${name}@${k}x.png`), sprite.png(k));
     await writeFile(path.join(out, `${name}@4x.png`), sprite.png(4));
     console.log(`img/${name}.png ${sprite.w}×${sprite.h}`);
   }

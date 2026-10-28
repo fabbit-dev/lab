@@ -43,7 +43,7 @@ describe('страница', () => {
   });
 
   it('демо подписано как иллюстрация', () => {
-    expect(document.querySelector('.note').textContent).toMatch(/Иллюстрация/);
+    expect(document.querySelector('#device .note').textContent).toMatch(/Иллюстрация/);
   });
 
   it('профиль и узел переключаются', async () => {
@@ -58,5 +58,38 @@ describe('страница', () => {
     expect(document.querySelector('[data-node-title]').textContent).toBe('Аккумулятор');
     expect(document.querySelector('.node[data-node="battery"]').getAttribute('aria-pressed')).toBe('true');
     expect(b).not.toBeNull();
+  });
+
+  it('высота текста не зависит от выбора: копии всех вариантов без data-атрибутов', () => {
+    const ghosts = document.querySelectorAll('[data-mode-stack] .stack__ghost');
+    expect(ghosts.length).toBe(Object.keys(MODES).length);
+    expect(document.querySelectorAll('[data-node-stack] .stack__ghost').length).toBe(Object.keys(NODES).length);
+    expect(document.querySelectorAll('[data-node-title]').length).toBe(1);
+    for (const g of document.querySelectorAll('.stack__ghost')) expect(g.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('фото стенда: превью сразу, полный кадр по нажатию', async () => {
+    const { initZoom } = await import('./main.js');
+    const dialog = document.querySelector('[data-zoom-dialog]');
+    dialog.showModal = function () { this.open = true; };
+    initZoom();
+    const big = dialog.querySelector('img');
+    expect(big.hasAttribute('src')).toBe(false);
+    document.querySelector('[data-zoom]').click();
+    expect(big.getAttribute('src')).toBe('/img/stand.webp');
+    expect(dialog.open).toBe(true);
+  });
+
+  it('у картинок размеры, у декоративных пустой alt', () => {
+    for (const img of document.querySelectorAll('img')) {
+      expect(img.getAttribute('width')).toMatch(/^\d+$/);
+      expect(img.getAttribute('height')).toMatch(/^\d+$/);
+      expect(img.hasAttribute('alt')).toBe(true);
+    }
+  });
+
+  it('заголовок страницы h1, разделы h2', () => {
+    expect(document.querySelectorAll('h1').length).toBe(1);
+    expect(document.querySelector('h1 img').alt).toBe('Fabbit');
   });
 });
