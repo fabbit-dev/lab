@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { wave, uartBits, uartTrack, createRunner, jump, stepRunner, WAVES, LOGO_BUNNY, collides } from './screen.js';
+import { wave, uartBits, uartTrack, createRunner, jump, stepRunner, WAVES, LOGO_BUNNY, GAME_BUNNY, collides, SPEED } from './screen.js';
 import { drawText, textWidth, glyph } from './pixfont.js';
 
 describe('осциллограф', () => {
@@ -47,18 +47,34 @@ describe('ретро: кролик и тыквы', () => {
     expect(r.hit).toBeLessThanOrEqual(0);
     expect(r.score).toBe(0);
   });
-  it('окно для прыжка: не меньше 6 px пути тыквы дают очко', () => {
+  // Играбельность: момент прыжка проверяем по положению тыквы, когда нажали пробел.
+  const window_ = () => {
     const wins = [];
-    for (let at = 0; at <= 50; at++) {
+    for (let at = 0; at <= 60; at++) {
       const r = createRunner();
-      for (let i = 0; i < 600 && r.score === 0 && r.hit <= 0; i++) {
+      for (let i = 0; i < 900 && r.score === 0 && r.hit <= 0; i++) {
         const o = r.obstacles[0];
-        if (o && o.x <= at) jump(r);
+        if (o && o.x <= at && r.vy === 0 && r.y === 0 && !r.jumped) { jump(r); r.jumped = true; }
         stepRunner(r, 1 / 60, never);
       }
       if (r.score === 1) wins.push(at);
     }
-    expect(wins.length).toBeGreaterThanOrEqual(6);
+    return wins;
+  };
+  it('окно для прыжка: одно нажатие засчитывается не меньше 300 мс', () => {
+    expect((window_().length / SPEED) * 1000).toBeGreaterThanOrEqual(300);
+  });
+  it('за 10 тыкв подряд прыжок в середине окна не сбивает ни разу', () => {
+    const wins = window_();
+    const at = wins[Math.floor(wins.length / 2)];
+    const r = createRunner();
+    for (let i = 0; i < 60 * 60 && r.score < 10; i++) {
+      const o = r.obstacles.find((p) => !p.passed);
+      if (o && o.x <= at) jump(r);
+      stepRunner(r, 1 / 60, never);
+      expect(r.hit, `сбит на тыкве ${r.score + 1}`).toBeLessThanOrEqual(0);
+    }
+    expect(r.score).toBe(10);
   });
 });
 
@@ -69,12 +85,18 @@ describe('кролик с лого', () => {
       Array.from({ length: Number(w) }, (_, i) => `${Number(x) + i},${y}`)));
     LOGO_BUNNY.forEach((row, y) => [...row].forEach((c, x) => expect(px.has(`${x},${y}`), `${x},${y}`).toBe(c === '#')));
   });
-  it('в игре тот же кролик, столкновение по пикселям', () => {
+  it('в игре лого, уменьшенное до 10×12: строки ровные, глаза и рот прорезаны', () => {
+    expect(GAME_BUNNY).toHaveLength(12);
+    expect(new Set(GAME_BUNNY.map((r) => r.length))).toEqual(new Set([10]));
+    expect(GAME_BUNNY.some((r) => /^##\.####\.##$/.test(r))).toBe(true);
+    expect(GAME_BUNNY.some((r) => /^#+\.\.#+$/.test(r))).toBe(true);
+  });
+  it('столкновение по пикселям', () => {
     const r = createRunner();
     expect(collides(r, { x: 30 })).toBe(false);
-    expect(collides(r, { x: 10 })).toBe(true);
-    r.y = -20;
-    expect(collides(r, { x: 10 })).toBe(false);
+    expect(collides(r, { x: 6 })).toBe(true);
+    r.y = -12;
+    expect(collides(r, { x: 6 })).toBe(false);
   });
 });
 
