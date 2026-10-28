@@ -9,7 +9,9 @@
     <meta property="og:title" content="Мастерская Fabbit" />
     <meta property="og:description" content="Карманный прибор электронщика на ПЛИС. Проект в разработке." />
     <meta property="og:image" content="https://lab.fabbit.dev/world/fabbit-desk.png" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32 64x64" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <script type="module" src="/src/main.js"></script>
   </head>
   <body>
@@ -36,12 +38,12 @@
             <img class="pix" src="/img/device.png" width="82" height="130" alt="" fetchpriority="high" />
             <canvas class="pix device__screen" data-screen tabindex="0" role="button" aria-label="Экран Fabbit"></canvas>
           </div>
-          <figcaption class="hint" data-mode-hint aria-live="polite"></figcaption>
+          <figcaption>
+            <p class="hint" data-mode-hint aria-live="polite"></p>
+            <p class="note">Иллюстрация, не&nbsp;измерение с&nbsp;прибора.</p>
+          </figcaption>
         </figure>
-        <div class="caption">
-          <div class="stack" data-mode-stack><p data-mode-desc></p></div>
-          <p class="note">Иллюстрация, не&nbsp;измерение с&nbsp;прибора.</p>
-        </div>
+        <div class="stack" data-mode-stack><p data-mode-desc></p></div>
       </section>
 
       <section class="panel frame" id="inside" aria-labelledby="h-inside">
@@ -51,7 +53,7 @@
             <div class="board" data-board>
               <img class="pix" src="/img/board.png" width="82" height="130" alt="Плата Fabbit без задней крышки: аналоговый модуль, модуль ПЛИС, аккумулятор" />
             </div>
-            <figcaption class="hint">Выбери узел на&nbsp;плате.</figcaption>
+            <figcaption><p class="hint">Выбери узел на&nbsp;плате.</p></figcaption>
           </figure>
           <div class="node-card" data-node-card>
             <div class="row" role="group" aria-label="Узел">
@@ -74,8 +76,8 @@
       <section class="panel frame" id="status" aria-labelledby="h-now">
         <h2 id="h-now" class="panel__title">Что сейчас</h2>
         <ul class="status">
-          <li><span class="tag tag--ok">Работает</span> Логический анализатор и&nbsp;ретро-консоль, меню и&nbsp;загрузчик профилей.</li>
-          <li><span class="tag">В&nbsp;работе</span> Принципиальная схема прибора.</li>
+          <li><span class="tag tag--ok">Работает</span><p>Логический анализатор и&nbsp;ретро-консоль, меню и&nbsp;загрузчик профилей.</p></li>
+          <li><span class="tag">В&nbsp;работе</span><p>Принципиальная схема прибора.</p></li>
         </ul>
         <figure class="photo">
           <img class="pix photo__clip" src="/img/clip.png" width="19" height="42" alt="" />
@@ -116,7 +118,10 @@
 
     <footer class="foot">
       <img class="pix foot__bunny" src="/world/bunny-pumpkin.png" width="32" height="32" alt="" loading="lazy" />
-      <span><a href="https://fabbit.dev/" target="_blank" rel="noopener" translate="no">fabbit.dev</a> · код MIT · железо CERN-OHL-S-2.0</span>
+      <div class="foot__text">
+        <p><a href="https://fabbit.dev/" target="_blank" rel="noopener" translate="no">fabbit.dev</a></p>
+        <p>код MIT · железо CERN-OHL-S-2.0</p>
+      </div>
     </footer>
   </body>
 </html>

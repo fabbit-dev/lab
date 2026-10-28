@@ -24,6 +24,17 @@ describe('дизайн-система', () => {
     expect(stray).toEqual([]);
   });
 
+  it('gap, padding и margin только токенами', () => {
+    const decls = body.replace(/\/\*[\s\S]*?\*\//g, '').split(/[;{}]/).map((d) => d.trim()).filter(Boolean);
+    for (const d of decls) {
+      const m = d.match(/^((?:gap|row-gap|column-gap|padding|margin)(?:-[a-z]+)*):\s*(.+)$/);
+      if (!m) continue;
+      const [, prop, v] = m;
+      if (prop === 'margin' && v === 'auto') continue;
+      for (const part of v.replace(/calc\([^)]*\)/g, 'var(--calc)').split(/\s+/)) expect(part, `${prop}: ${v}`).toMatch(/^(0|auto|var\(--[\w-]+\))$/);
+    }
+  });
+
   it('шкала отступов кратна 4 px', () => {
     for (const [, v] of css.matchAll(/--s\d: (\d+)px/g)) expect(Number(v) % 4).toBe(0);
   });
@@ -64,8 +75,9 @@ describe('дизайн-система', () => {
   });
 
   it('курсор: свой щуп с запасным системным', () => {
-    expect(css).toMatch(/cursor: url\(\/img\/cursor\.png\) 1 1, auto/);
-    expect(body.match(/cursor: pointer/g) ?? []).toEqual([]);
+    expect(css).toMatch(/cursor: url\(\/img\/cursor@2x\.png\) 1 1, auto/);
+    expect(css).toMatch(/cursor: url\(\/img\/pointer@2x\.png\) 11 1, pointer/);
+    expect(body.match(/cursor: (pointer|inherit);/g) ?? []).toEqual([]);
   });
 
   it('без transition: all и с учётом reduced motion', () => {
