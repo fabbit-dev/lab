@@ -1,22 +1,40 @@
-/* Палитра из тайлсета мира Тыкворкинга (art/palette.js). */
+/* Дизайн-система мастерской. Правила: .claude/rules/frontend.md, проверка: src/style.test.js.
+   Цвета из тайлсета мира Тыкворкинга (art/palette.js). Текст на фоне: контраст не ниже 4,5:1. */
 :root {
-  --outline: #2e1101;
-  --outline-2: #41230a;
-  --pumpkin: #e8843c;
-  --pumpkin-light: #f1a15a;
-  --pumpkin-shade: #c4562f;
-  --gold: #fcac15;
-  --cream: #fff7ec;
-  --paper: #feead1;
-  --paper-shade: #e7c9a0;
-  --leaf: #58683b;
-  --sage: #a8b58a;
-  --text: #2e1101;
-  --text-2: #6b4a2b;
-  --font-pix: 'Tiny5', ui-monospace, monospace;
-  --font-text: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --k: 3; /* целый масштаб пиксельных картинок */
-  --px: 3px; /* толщина пиксельной рамки */
+  /* цвет */
+  --outline: #2e1101;      /* контур, основной текст: 16,5 на cream, 6,5 на pumpkin */
+  --pumpkin: #e8843c;      /* фон страницы, нажатая вкладка (текст outline) */
+  --rust: #ac4c10;         /* акцентный текст и метка «В работе»: 5,2 с cream */
+  --gold: #fcac15;         /* выделение узла на тёмной плате */
+  --cream: #fff7ec;        /* панели */
+  --paper: #feead1;        /* кнопки, врезки */
+  --paper-shade: #e7c9a0;  /* тень фото */
+  --white: #ffffff;        /* кнопка под курсором */
+  --leaf: #58683b;         /* заголовки, главная кнопка: 5,7 с cream */
+  --leaf-hover: #46532f;
+  --text: var(--outline);
+  --text-2: #6b4a2b;       /* вторичный текст: 7,5 на cream */
+
+  /* шрифт один: Tiny5. Пиксель глифа 128/1024 em, поэтому кегль кратен 8 px:
+     16 px: глиф из пикселей по 2 px, 24 px: по 3 px. Межстрочный тоже кратен 8 */
+  --font: 'Tiny5', ui-monospace, monospace;
+  --t-body: 16px;   --lh-body: 24px;  /* текст, кнопки, метки */
+  --t-title: 24px;  --lh-title: 32px; /* заголовки разделов, вводный текст */
+
+  /* отступы: шкала 4 · 8 · 12 · 16 · 24 · 32 · 48 */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px;
+  --gutter: var(--s4);     /* поле страницы */
+  --gap-page: var(--s5);   /* между панелями */
+  --pad-panel: var(--s4);  /* внутри панели */
+  --gap-stack: var(--s4);  /* между блоками в панели */
+  --gap-row: var(--s2);    /* между кнопками */
+
+  /* пиксели: --k целый масштаб спрайтов, --px один пиксель спрайта, он же толщина рамки */
+  --k: 3;
+  --px: calc(var(--k) * 1px);
+  --control: 44px;
+  --control-s: 40px;
+  --page: 460px;
   color-scheme: light;
 }
 
@@ -25,20 +43,34 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   min-height: 100vh;
-  font: 16px/1.5 var(--font-text);
+  font: var(--t-body)/var(--lh-body) var(--font);
+  -webkit-font-smoothing: none;
+  font-smooth: never;
   color: var(--text);
   background-color: var(--pumpkin);
   /* обои как стены мира: светлые дуги на оранжевом */
   background-image: radial-gradient(circle at 50% 120%, transparent 54%, rgb(255 255 255 / .07) 55% 58%, transparent 59%);
   background-size: 48px 24px;
+  -webkit-tap-highlight-color: transparent;
 }
-a { color: inherit; }
+h1, h2, h3, p, ul, figure { margin: 0; }
+ul { padding: 0; list-style: none; }
+h1, h2, h3 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
+a { color: inherit; text-underline-offset: .2em; }
+button, a, canvas { touch-action: manipulation; }
+/* курсор: пиксельный щуп, остриё в точке 1,1 */
+html { cursor: url(/img/cursor.png) 1 1, auto; cursor: image-set(url(/img/cursor.png) 1x, url(/img/cursor@2x.png) 2x) 1 1, auto; }
+button, a, canvas, [role='button'] { cursor: inherit; }
 img.pix, canvas.pix { image-rendering: pixelated; image-rendering: crisp-edges; }
-:focus-visible { outline: var(--px) solid var(--gold); outline-offset: 2px; }
+:focus-visible { outline: var(--px) solid var(--outline); outline-offset: var(--px); }
 
-/* пиксельная рамка: срезанные углы */
-.panel, .btn, .tab, .chip, .badge, .lead {
+/* ── пиксельная рамка: тень в 1 пиксель спрайта с четырёх сторон, углы срезаны.
+   Рамка рисуется снаружи блока, поэтому у блока поле margin: var(--px):
+   видимый край совпадает с краем ячейки, и отступы ниже задают видимые зазоры. */
+.frame {
   --bg: var(--cream);
+  margin: var(--px);
   background: var(--bg);
   box-shadow:
     0 calc(-1 * var(--px)) 0 0 var(--outline),
@@ -47,112 +79,153 @@ img.pix, canvas.pix { image-rendering: pixelated; image-rendering: crisp-edges; 
     var(--px) 0 0 0 var(--outline);
 }
 
-.top, main, .foot { width: min(100% - 32px, 460px); margin-inline: auto; }
-
+/* ── каркас страницы ── */
+.top, main, .foot {
+  width: min(100% - 2 * max(var(--gutter), env(safe-area-inset-left)), var(--page));
+  margin-inline: auto;
+}
 .top {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-  padding: 20px 0 16px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: var(--s2) var(--s4);
+  padding-block: var(--s5) var(--gap-page);
 }
-.top__logo { display: block; width: 138px; height: auto; image-rendering: pixelated; }
-.top__tag { font: 18px/1 var(--font-pix); color: var(--cream); text-shadow: 2px 2px 0 var(--pumpkin-shade); }
+.top__logo { display: block; width: calc(80px * 2); height: auto; }
+.top__tag { line-height: 1; }
 
-main { display: grid; gap: 22px; }
+main { display: grid; gap: var(--gap-page); }
 
-.intro { display: grid; gap: 12px; justify-items: start; }
-.lead { --bg: var(--paper); margin: 0; padding: 12px 14px; font-size: 17px; line-height: 1.45; }
-.badge {
-  --bg: var(--leaf);
-  margin: 0; padding: 4px 10px; font: 15px/1.2 var(--font-pix); color: var(--cream);
-}
+.intro { display: grid; gap: var(--gap-row); justify-items: start; }
+.lead { --bg: var(--paper); padding: var(--s3) var(--s4); }
+.badge { --bg: var(--leaf); padding: var(--s1) var(--s2); line-height: var(--s4); color: var(--cream); }
 
-.panel { padding: 16px; }
-.panel > p { margin: 0 0 10px; }
-.panel__title {
-  margin: 0 0 12px; font: 28px/1 var(--font-pix); color: var(--leaf);
-}
+.panel { display: grid; gap: var(--gap-stack); align-content: start; padding: var(--pad-panel); }
+.panel__title { font-size: var(--t-title); line-height: var(--lh-title); font-weight: 400; color: var(--leaf); }
 
-/* кнопки-вкладки */
-.tabs, .chips, .links { display: flex; flex-wrap: wrap; gap: 10px var(--px); }
-.tabs { margin: 0 var(--px) 18px; gap: 10px calc(var(--px) * 3); }
-.tab, .chip, .btn {
+/* ── кнопки ── */
+.row { display: flex; flex-wrap: wrap; gap: var(--gap-row); }
+.btn {
   --bg: var(--paper);
-  appearance: none; border: 0; margin: var(--px);
-  font: 17px/1 var(--font-pix); color: var(--text);
-  padding: 9px 12px; min-height: 40px; cursor: pointer; text-decoration: none;
+  appearance: none; border: 0;
   display: inline-flex; align-items: center;
-  transition: transform .08s;
+  min-height: var(--control); padding: 0 var(--s3); cursor: inherit;
+  font: inherit; line-height: var(--s4); color: var(--text); text-decoration: none;
+  transition: transform .08s, background-color .08s;
 }
-.tab:hover, .chip:hover, .btn:hover { --bg: #fff; }
-.tab:active, .chip:active, .btn:active { transform: translateY(2px); }
-.tab[aria-pressed='true'], .chip[aria-pressed='true'] { --bg: var(--pumpkin); color: var(--cream); }
-.chip { font-size: 15px; padding: 6px 9px; min-height: 34px; }
+.btn--s { min-height: var(--control-s); }
+.btn:hover { --bg: var(--white); }
+.btn:active { transform: translateY(var(--px)); }
+.btn[aria-pressed='true'] { --bg: var(--pumpkin); }
+.btn--main { --bg: var(--leaf); color: var(--cream); }
+.btn--main:hover { --bg: var(--leaf-hover); }
 
-.device, .board { position: relative; width: calc(82px * var(--k)); margin-inline: auto; }
+/* ── картинка с подписью: прибор, плата ── */
+.figure { display: grid; gap: var(--s3); justify-items: center; }
+.device, .board { position: relative; width: calc(82px * var(--k-art, var(--k))); }
 .device > img, .board > img { display: block; width: 100%; height: auto; }
-.device__screen { position: absolute; width: 0; cursor: pointer; }
-.device__screen:focus-visible { outline-offset: 3px; }
+.device__screen { position: absolute; }
+.hint { color: var(--rust); text-align: center; }
 
-.hint { font: 17px/1.3 var(--font-pix); color: var(--pumpkin-shade); text-align: center; }
-.device + .hint { margin-top: 14px; }
-.desc { min-height: 3em; }
-.note { font-size: 13px; color: var(--text-2); }
-.panel > .note { margin: 0; }
+.caption { display: grid; gap: var(--s2); }
+.note { color: var(--text-2); }
 
-/* плата и узлы */
-.inside { display: grid; gap: 18px; }
+/* Блок с переменным текстом: невидимые копии всех вариантов в той же ячейке держат
+   высоту самого длинного, и страница не прыгает при переключении (src/main.js: reserve). */
+.stack { display: grid; }
+.stack > * { grid-area: 1 / 1; }
+.stack__ghost { visibility: hidden; }
+
+/* ── плата и узлы ── */
+.inside { display: grid; gap: var(--gap-stack); }
 .board { overflow: hidden; }
 .node {
   position: absolute; appearance: none; border: 0; padding: 0; margin: 0;
-  background: transparent; cursor: pointer;
+  background: transparent;
 }
+b, strong { font-weight: 400; }
 .node:hover { outline: 2px dashed var(--cream); outline-offset: -2px; }
+.node:focus-visible { outline: var(--px) dashed var(--cream); outline-offset: calc(-1 * var(--px)); }
 .node[aria-pressed='true'] {
+  z-index: 1;
   outline: var(--px) solid var(--gold); outline-offset: 0;
   box-shadow: 0 0 0 999px rgb(46 17 1 / .45);
-  z-index: 1;
 }
-.node-card .chips { margin: 0 var(--px) 12px; gap: 4px calc(var(--px) * 2); }
-.node-card__title { margin: 0 0 4px; font: 22px/1.1 var(--font-pix); color: var(--pumpkin-shade); }
-.node-card p { margin: 0 0 6px; }
-.node-card__spec { font: 14px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--text-2); }
+.node-card { display: grid; gap: var(--s3); align-content: start; }
+.node-info { display: grid; gap: var(--s1); align-content: start; }
+.node-info__title { font-size: var(--t-title); line-height: var(--lh-title); font-weight: 400; color: var(--rust); }
+.node-info__spec { color: var(--text-2); }
 
-/* статус */
-.status { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-.status li { display: grid; gap: 4px; justify-items: start; }
-.status__tag {
-  font: 14px/1 var(--font-pix); padding: 4px 7px; color: var(--cream); background: var(--pumpkin-shade);
+/* ── статус ── */
+.status { display: grid; gap: var(--s3); align-content: start; }
+.status li { display: grid; gap: var(--s1); justify-items: start; }
+.tag { padding: var(--s1) var(--s2); line-height: var(--s4); color: var(--cream); background: var(--rust); }
+.tag--ok { background: var(--leaf); }
+
+/* ── фото стенда на скрепке ── */
+.photo { position: relative; display: grid; gap: var(--s3); justify-items: start; padding-top: var(--s4); }
+.photo__clip {
+  position: absolute; z-index: 1; top: 0; left: var(--s5);
+  width: calc(19px * 2); height: calc(42px * 2);
 }
-.status__tag--ok { background: var(--leaf); }
+.photo__open {
+  appearance: none; border: 0; padding: var(--s2) var(--s2) var(--s6); margin: 0;
+  background: var(--white);
+  box-shadow: 0 var(--s1) 0 0 var(--paper-shade);
+  transform: rotate(-1.5deg);
+  transition: transform .15s;
+}
+.photo__open:hover { transform: rotate(0deg) scale(1.02); }
+.photo__img { display: block; width: 100%; max-width: 360px; height: auto; }
+.photo__caption { display: flex; flex-wrap: wrap; gap: 0 var(--s3); }
 
-/* команда */
-.team { list-style: none; margin: 14px 0 18px; padding: 0; display: grid; gap: 12px; }
-.team li { display: flex; gap: 12px; align-items: center; }
-.team img { width: 64px; height: 64px; flex: none; background: var(--paper); outline: var(--px) solid var(--outline); }
-.team div { display: grid; }
-.team span { color: var(--text-2); font-size: 15px; }
-.links { margin: 0 var(--px); gap: 10px calc(var(--px) * 3); }
-.btn--main { --bg: var(--leaf); color: var(--cream); }
-.btn--main:hover { --bg: #6c7f48; }
+.zoom {
+  --bg: var(--cream);
+  /* margin: auto центрирует модальное окно; .frame задаёт поле под рамку, здесь оно не нужно */
+  margin: auto; border: 0; padding: var(--s3); max-width: min(100vw - 2 * var(--s4), 1200px);
+  overscroll-behavior: contain;
+}
+.zoom::backdrop { background: rgb(46 17 1 / .7); }
+.zoom[open] { display: grid; gap: var(--s3); justify-items: end; }
+.zoom__img { display: block; width: 100%; max-height: calc(100vh - 120px); height: auto; object-fit: contain; }
+
+/* ── команда ── */
+.team { display: grid; gap: var(--s3); }
+.team li { display: flex; align-items: center; gap: var(--s3); }
+.team img { flex: none; width: 80px; height: 80px; }
+.team__who { display: grid; min-width: 0; }
+.team__role { color: var(--text-2); }
 
 .foot {
-  display: flex; align-items: center; gap: 10px;
-  padding: 28px 0 32px; font-size: 13px; color: var(--cream);
+  display: flex; align-items: center; gap: var(--s3);
+  padding-block: var(--s6);
 }
-.foot__bunny { width: 64px; height: 64px; flex: none; }
+.foot__bunny { flex: none; width: calc(32px * 2); height: calc(32px * 2); }
 
+/* узкая вкладка: прибор 82 × 2 вместо 82 × 3, иначе не влезает в панель */
 @media (max-width: 320px) {
   :root { --k: 2; }
 }
 
-/* широкий экран: прибор и плата рядом, статус и команда под ними */
+/* десктоп: прибор ×4 и плата ×3 рядом, высоты панелей близки (≈ 810 px);
+   статус и команда во всю ширину, фото стенда справа от списка */
 @media (min-width: 960px) {
-  .top, main, .foot { width: min(100% - 64px, 1040px); }
-  main { grid-template-columns: 1fr 1fr; align-items: stretch; }
-  .intro { grid-column: 1 / -1; grid-template-columns: minmax(0, 640px) auto; align-items: center; justify-content: space-between; }
-  .inside { grid-template-columns: auto 1fr; align-items: start; }
-  :root { --k: 3; }
+  :root { --gutter: var(--s6); --page: 1040px; --pad-panel: var(--s5); }
+  main {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 'intro intro' 'device inside' 'status status' 'team team';
+  }
+  .intro { grid-area: intro; }
+  .lead { max-width: 640px; }
+  #device { --k-art: 4; grid-area: device; grid-template-rows: auto auto 1fr auto; }
+  #device .figure { align-content: center; }
+  #inside { grid-area: inside; }
+  #status { grid-area: status; grid-template-columns: 1fr auto; grid-template-rows: auto 1fr; column-gap: var(--s6); }
+  #status .panel__title, #status .status { grid-column: 1; }
+  #status .photo { grid-column: 2; grid-row: 1 / span 2; }
+  #team { grid-area: team; }
+  .team { grid-template-columns: repeat(2, minmax(0, 360px)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tab, .chip, .btn { transition: none; }
+  .btn, .photo__open { transition: none; }
+  .photo__open, .photo__open:hover { transform: none; }
 }

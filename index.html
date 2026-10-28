@@ -14,85 +14,109 @@
   </head>
   <body>
     <header class="top">
-      <img class="top__logo" src="/img/logo.svg" width="92" height="31" alt="Fabbit" />
+      <h1><img class="top__logo" src="/img/logo.svg" width="80" height="19" alt="Fabbit" translate="no" /></h1>
       <span class="top__tag">мастерская · Тыкворкинг’26</span>
     </header>
 
     <main>
       <section class="intro">
-        <p class="lead">Карманный прибор электронщика на&nbsp;ПЛИС. Один корпус, разные приборы: профиль задаёт схему внутри.</p>
-        <p class="badge">Проект в&nbsp;разработке</p>
+        <p class="lead frame">Карманный прибор электронщика на&nbsp;ПЛИС. Один корпус, разные приборы: профиль задаёт схему внутри.</p>
+        <p class="badge frame">Проект в&nbsp;разработке</p>
       </section>
 
-      <section class="panel" aria-labelledby="h-device">
+      <section class="panel frame" id="device" aria-labelledby="h-device">
         <h2 id="h-device" class="panel__title">Прибор</h2>
-        <div class="tabs" role="group" aria-label="Профиль">
-          <button type="button" class="tab" data-mode="scope" aria-pressed="true">Осциллограф</button>
-          <button type="button" class="tab" data-mode="logic" aria-pressed="false">Логика</button>
-          <button type="button" class="tab" data-mode="retro" aria-pressed="false">Ретро</button>
+        <div class="row" role="group" aria-label="Профиль">
+          <button type="button" class="btn frame" data-mode="scope" aria-pressed="true">Осциллограф</button>
+          <button type="button" class="btn frame" data-mode="logic" aria-pressed="false">Логика</button>
+          <button type="button" class="btn frame" data-mode="retro" aria-pressed="false">Ретро</button>
         </div>
-        <div class="device" data-device>
-          <img class="pix" src="/img/device.png" width="82" height="130" alt="" />
-          <canvas class="pix device__screen" data-screen tabindex="0" role="img" aria-label="Экран Fabbit"></canvas>
+        <figure class="figure">
+          <div class="device" data-device>
+            <img class="pix" src="/img/device.png" width="82" height="130" alt="" fetchpriority="high" />
+            <canvas class="pix device__screen" data-screen tabindex="0" role="button" aria-label="Экран Fabbit"></canvas>
+          </div>
+          <figcaption class="hint" data-mode-hint aria-live="polite"></figcaption>
+        </figure>
+        <div class="caption">
+          <div class="stack" data-mode-stack><p data-mode-desc></p></div>
+          <p class="note">Иллюстрация, не&nbsp;измерение с&nbsp;прибора.</p>
         </div>
-        <p class="hint" data-mode-hint aria-live="polite"></p>
-        <p class="desc" data-mode-desc></p>
-        <p class="note">Иллюстрация, не&nbsp;измерение с&nbsp;прибора.</p>
       </section>
 
-      <section class="panel" aria-labelledby="h-inside">
+      <section class="panel frame" id="inside" aria-labelledby="h-inside">
         <h2 id="h-inside" class="panel__title">Загляни внутрь</h2>
-        <p class="hint">Выбери узел на&nbsp;плате.</p>
         <div class="inside">
-          <div class="board" data-board>
-            <img class="pix" src="/img/board.png" width="82" height="130" alt="Плата Fabbit без задней крышки: аналоговый модуль, модуль ПЛИС, аккумулятор" />
-          </div>
-          <div class="node-card" data-node-card aria-live="polite">
-            <div class="chips" role="group" aria-label="Узел">
-              <button type="button" class="chip" data-node-chip="fpga">ПЛИС</button>
-              <button type="button" class="chip" data-node-chip="mcu">Микроконтроллер</button>
-              <button type="button" class="chip" data-node-chip="analog">Аналоговый модуль</button>
-              <button type="button" class="chip" data-node-chip="battery">Аккумулятор</button>
+          <figure class="figure">
+            <div class="board" data-board>
+              <img class="pix" src="/img/board.png" width="82" height="130" alt="Плата Fabbit без задней крышки: аналоговый модуль, модуль ПЛИС, аккумулятор" />
             </div>
-            <h3 class="node-card__title" data-node-title></h3>
-            <p data-node-what></p>
-            <p class="node-card__spec" data-node-spec></p>
+            <figcaption class="hint">Выбери узел на&nbsp;плате.</figcaption>
+          </figure>
+          <div class="node-card" data-node-card>
+            <div class="row" role="group" aria-label="Узел">
+              <button type="button" class="btn btn--s frame" data-node-chip="fpga">ПЛИС</button>
+              <button type="button" class="btn btn--s frame" data-node-chip="mcu">Микроконтроллер</button>
+              <button type="button" class="btn btn--s frame" data-node-chip="analog">Аналоговый модуль</button>
+              <button type="button" class="btn btn--s frame" data-node-chip="battery">Аккумулятор</button>
+            </div>
+            <div class="stack" data-node-stack>
+              <div class="node-info" data-node-info aria-live="polite">
+                <h3 class="node-info__title" data-node-title></h3>
+                <p data-node-what></p>
+                <p class="node-info__spec" data-node-spec translate="no"></p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="panel" aria-labelledby="h-now">
+      <section class="panel frame" id="status" aria-labelledby="h-now">
         <h2 id="h-now" class="panel__title">Что сейчас</h2>
         <ul class="status">
-          <li><span class="status__tag status__tag--ok">Работает</span> Логический анализатор и&nbsp;ретро-консоль, меню и&nbsp;загрузчик профилей.</li>
-          <li><span class="status__tag">В&nbsp;работе</span> Принципиальная схема прибора.</li>
+          <li><span class="tag tag--ok">Работает</span> Логический анализатор и&nbsp;ретро-консоль, меню и&nbsp;загрузчик профилей.</li>
+          <li><span class="tag">В&nbsp;работе</span> Принципиальная схема прибора.</li>
         </ul>
+        <figure class="photo">
+          <img class="pix photo__clip" src="/img/clip.png" width="19" height="42" alt="" />
+          <button type="button" class="photo__open" data-zoom aria-haspopup="dialog">
+            <img class="photo__img" src="/img/stand-720.webp" width="720" height="480" loading="lazy"
+              alt="Стенд Fabbit: макетная плата с проводами, модуль ПЛИС на отладочной плате, плата кнопок" />
+          </button>
+          <figcaption class="photo__caption">Стенд на&nbsp;28&nbsp;октября <span class="hint">Нажми: крупнее</span></figcaption>
+        </figure>
       </section>
 
-      <section class="panel" aria-labelledby="h-team">
+      <section class="panel frame" id="team" aria-labelledby="h-team">
         <h2 id="h-team" class="panel__title">Команда</h2>
         <p>Собираем Fabbit в&nbsp;10&nbsp;классе. Схемы, логику ПЛИС, прошивку и&nbsp;корпус делаем сами.</p>
         <ul class="team">
           <li>
-            <img class="pix" src="/img/roma-dither.png" width="72" height="72" alt="" />
-            <div><b>Рома Горбачев, 16&nbsp;лет</b><span>Главный инженер, программист</span></div>
+            <img class="frame" src="/img/roma.webp" width="240" height="240" alt="" loading="lazy" />
+            <div class="team__who"><b>Рома Горбачев, 16&nbsp;лет</b><span class="team__role">Главный инженер, программист</span></div>
           </li>
           <li>
-            <img class="pix" src="/img/yaroslav-dither.png" width="72" height="72" alt="" />
-            <div><b>Ярик Павлюк, 16&nbsp;лет</b><span>Корпус и&nbsp;3D</span></div>
+            <img class="frame" src="/img/yaroslav.webp" width="240" height="240" alt="" loading="lazy" />
+            <div class="team__who"><b>Ярик Павлюк, 16&nbsp;лет</b><span class="team__role">Корпус и&nbsp;3D</span></div>
           </li>
         </ul>
-        <nav class="links" aria-label="Ссылки">
-          <a class="btn btn--main" href="https://fabbit.dev/" target="_blank" rel="noopener">Сайт проекта</a>
-          <a class="btn" href="https://github.com/fabbit-dev/fabbit" target="_blank" rel="noopener">Исходники</a>
-          <a class="btn" href="https://t.me/sshareds" target="_blank" rel="noopener">Написать Роме</a>
+        <nav class="row" aria-label="Ссылки">
+          <a class="btn btn--main frame" href="https://fabbit.dev/" target="_blank" rel="noopener">Сайт проекта</a>
+          <a class="btn frame" href="https://github.com/fabbit-dev/fabbit" target="_blank" rel="noopener">Исходники</a>
+          <a class="btn frame" href="https://t.me/sshareds" target="_blank" rel="noopener">Написать Роме</a>
         </nav>
       </section>
     </main>
 
+    <dialog class="zoom frame" data-zoom-dialog aria-label="Стенд на 28 октября">
+      <img class="zoom__img" data-src="/img/stand.webp" width="1600" height="1067"
+        alt="Стенд Fabbit: макетная плата с проводами, модуль ПЛИС на отладочной плате, плата кнопок" />
+      <form method="dialog"><button class="btn frame zoom__close" type="submit">Закрыть</button></form>
+    </dialog>
+
     <footer class="foot">
-      <img class="pix foot__bunny" src="/world/bunny-pumpkin.png" width="32" height="32" alt="" />
-      <span><a href="https://fabbit.dev/" target="_blank" rel="noopener">fabbit.dev</a> · код MIT · железо CERN-OHL-S-2.0</span>
+      <img class="pix foot__bunny" src="/world/bunny-pumpkin.png" width="32" height="32" alt="" loading="lazy" />
+      <span><a href="https://fabbit.dev/" target="_blank" rel="noopener" translate="no">fabbit.dev</a> · код MIT · железо CERN-OHL-S-2.0</span>
     </footer>
   </body>
 </html>
