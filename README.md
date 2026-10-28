@@ -19,8 +19,19 @@ npm run dev
 | `npm test` | Тесты Vitest |
 | `npm run build` | Сборка в `dist/` |
 | `npm run preview` | Просмотр сборки на [localhost:4174](http://localhost:4174) |
-| `npm run art` | Спрайты из `art/sprites/` в `public/world/` |
+| `npm run art` | Спрайты из `art/sprites/` в `public/world/`, картинки страницы из `art/page/` в `public/img/` |
 | `npm run art -- --mock` | И мокап на куске карты мира в `art/out/mock.png` |
+
+## Страница
+
+Ванильный JS, одна страница `index.html`. Вёрстка под боковую вкладку мира шириной около 400 px, на десктопе два столбца.
+
+```text
+src/screen.js   экран прибора 64×48: осциллограф, логика, ретро
+src/geom.js     прямоугольники экрана и узлов платы
+src/copy.js     тексты профилей и узлов
+art/page/       прибор и плата, пиксельные картинки страницы
+```
 
 ## Графика для мира
 

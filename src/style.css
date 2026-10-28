@@ -1,0 +1,158 @@
+/* Палитра из тайлсета мира Тыкворкинга (art/palette.js). */
+:root {
+  --outline: #2e1101;
+  --outline-2: #41230a;
+  --pumpkin: #e8843c;
+  --pumpkin-light: #f1a15a;
+  --pumpkin-shade: #c4562f;
+  --gold: #fcac15;
+  --cream: #fff7ec;
+  --paper: #feead1;
+  --paper-shade: #e7c9a0;
+  --leaf: #58683b;
+  --sage: #a8b58a;
+  --text: #2e1101;
+  --text-2: #6b4a2b;
+  --font-pix: 'Tiny5', ui-monospace, monospace;
+  --font-text: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --k: 3; /* целый масштаб пиксельных картинок */
+  --px: 3px; /* толщина пиксельной рамки */
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font: 16px/1.5 var(--font-text);
+  color: var(--text);
+  background-color: var(--pumpkin);
+  /* обои как стены мира: светлые дуги на оранжевом */
+  background-image: radial-gradient(circle at 50% 120%, transparent 54%, rgb(255 255 255 / .07) 55% 58%, transparent 59%);
+  background-size: 48px 24px;
+}
+a { color: inherit; }
+img.pix, canvas.pix { image-rendering: pixelated; image-rendering: crisp-edges; }
+:focus-visible { outline: var(--px) solid var(--gold); outline-offset: 2px; }
+
+/* пиксельная рамка: срезанные углы */
+.panel, .btn, .tab, .chip, .badge, .lead {
+  --bg: var(--cream);
+  background: var(--bg);
+  box-shadow:
+    0 calc(-1 * var(--px)) 0 0 var(--outline),
+    0 var(--px) 0 0 var(--outline),
+    calc(-1 * var(--px)) 0 0 0 var(--outline),
+    var(--px) 0 0 0 var(--outline);
+}
+
+.top, main, .foot { width: min(100% - 32px, 460px); margin-inline: auto; }
+
+.top {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding: 20px 0 16px;
+}
+.top__logo { display: block; width: 138px; height: auto; image-rendering: pixelated; }
+.top__tag { font: 18px/1 var(--font-pix); color: var(--cream); text-shadow: 2px 2px 0 var(--pumpkin-shade); }
+
+main { display: grid; gap: 22px; }
+
+.intro { display: grid; gap: 12px; justify-items: start; }
+.lead { --bg: var(--paper); margin: 0; padding: 12px 14px; font-size: 17px; line-height: 1.45; }
+.badge {
+  --bg: var(--leaf);
+  margin: 0; padding: 4px 10px; font: 15px/1.2 var(--font-pix); color: var(--cream);
+}
+
+.panel { padding: 16px; }
+.panel > p { margin: 0 0 10px; }
+.panel__title {
+  margin: 0 0 12px; font: 28px/1 var(--font-pix); color: var(--leaf);
+}
+
+/* кнопки-вкладки */
+.tabs, .chips, .links { display: flex; flex-wrap: wrap; gap: 10px var(--px); }
+.tabs { margin: 0 var(--px) 18px; gap: 10px calc(var(--px) * 3); }
+.tab, .chip, .btn {
+  --bg: var(--paper);
+  appearance: none; border: 0; margin: var(--px);
+  font: 17px/1 var(--font-pix); color: var(--text);
+  padding: 9px 12px; min-height: 40px; cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center;
+  transition: transform .08s;
+}
+.tab:hover, .chip:hover, .btn:hover { --bg: #fff; }
+.tab:active, .chip:active, .btn:active { transform: translateY(2px); }
+.tab[aria-pressed='true'], .chip[aria-pressed='true'] { --bg: var(--pumpkin); color: var(--cream); }
+.chip { font-size: 15px; padding: 6px 9px; min-height: 34px; }
+
+.device, .board { position: relative; width: calc(82px * var(--k)); margin-inline: auto; }
+.device > img, .board > img { display: block; width: 100%; height: auto; }
+.device__screen { position: absolute; width: 0; cursor: pointer; }
+.device__screen:focus-visible { outline-offset: 3px; }
+
+.hint { font: 17px/1.3 var(--font-pix); color: var(--pumpkin-shade); text-align: center; }
+.device + .hint { margin-top: 14px; }
+.desc { min-height: 3em; }
+.note { font-size: 13px; color: var(--text-2); }
+.panel > .note { margin: 0; }
+
+/* плата и узлы */
+.inside { display: grid; gap: 18px; }
+.board { overflow: hidden; }
+.node {
+  position: absolute; appearance: none; border: 0; padding: 0; margin: 0;
+  background: transparent; cursor: pointer;
+}
+.node:hover { outline: 2px dashed var(--cream); outline-offset: -2px; }
+.node[aria-pressed='true'] {
+  outline: var(--px) solid var(--gold); outline-offset: 0;
+  box-shadow: 0 0 0 999px rgb(46 17 1 / .45);
+  z-index: 1;
+}
+.node-card .chips { margin: 0 var(--px) 12px; gap: 4px calc(var(--px) * 2); }
+.node-card__title { margin: 0 0 4px; font: 22px/1.1 var(--font-pix); color: var(--pumpkin-shade); }
+.node-card p { margin: 0 0 6px; }
+.node-card__spec { font: 14px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--text-2); }
+
+/* статус */
+.status { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.status li { display: grid; gap: 4px; justify-items: start; }
+.status__tag {
+  font: 14px/1 var(--font-pix); padding: 4px 7px; color: var(--cream); background: var(--pumpkin-shade);
+}
+.status__tag--ok { background: var(--leaf); }
+
+/* команда */
+.team { list-style: none; margin: 14px 0 18px; padding: 0; display: grid; gap: 12px; }
+.team li { display: flex; gap: 12px; align-items: center; }
+.team img { width: 64px; height: 64px; flex: none; background: var(--paper); outline: var(--px) solid var(--outline); }
+.team div { display: grid; }
+.team span { color: var(--text-2); font-size: 15px; }
+.links { margin: 0 var(--px); gap: 10px calc(var(--px) * 3); }
+.btn--main { --bg: var(--leaf); color: var(--cream); }
+.btn--main:hover { --bg: #6c7f48; }
+
+.foot {
+  display: flex; align-items: center; gap: 10px;
+  padding: 28px 0 32px; font-size: 13px; color: var(--cream);
+}
+.foot__bunny { width: 64px; height: 64px; flex: none; }
+
+@media (max-width: 320px) {
+  :root { --k: 2; }
+}
+
+/* широкий экран: прибор и плата рядом, статус и команда под ними */
+@media (min-width: 960px) {
+  .top, main, .foot { width: min(100% - 64px, 1040px); }
+  main { grid-template-columns: 1fr 1fr; align-items: stretch; }
+  .intro { grid-column: 1 / -1; grid-template-columns: minmax(0, 640px) auto; align-items: center; justify-content: space-between; }
+  .inside { grid-template-columns: auto 1fr; align-items: start; }
+  :root { --k: 3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab, .chip, .btn { transition: none; }
+}
