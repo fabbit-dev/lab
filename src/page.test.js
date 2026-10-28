@@ -35,6 +35,18 @@ describe('страница', () => {
     expect(chips.sort()).toEqual(Object.keys(NODES).sort());
   });
 
+  it('кнопка «Исходники» ведёт на репозиторий этой страницы', () => {
+    const a = [...document.querySelectorAll('a.btn')].find((x) => x.textContent === 'Исходники');
+    expect(a.href).toBe('https://github.com/fabbit-dev/lab');
+  });
+
+  it('подсказка на сенсорном экране без пробела', async () => {
+    const { hintFor } = await import('./main.js');
+    expect(hintFor(MODES.retro, true)).not.toMatch(/пробел/);
+    expect(hintFor(MODES.retro, false)).toMatch(/пробел/);
+    expect(hintFor(MODES.scope, true)).toBe(MODES.scope.hint);
+  });
+
   it('внешние ссылки открываются в новой вкладке', () => {
     for (const a of document.querySelectorAll('a[href^="http"]')) {
       expect(a.target).toBe('_blank');

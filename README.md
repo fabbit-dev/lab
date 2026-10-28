@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://lab.fabbit.dev"><img src="https://img.shields.io/badge/lab.fabbit.dev-%D0%BE%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C-e8843c?style=for-the-badge" alt="Открыть lab.fabbit.dev"></a>
   <a href="https://fabbit.dev"><img src="https://img.shields.io/badge/fabbit.dev-%D0%BF%D1%80%D0%B8%D0%B1%D0%BE%D1%80-58683b?style=for-the-badge" alt="Сайт прибора"></a>
-  <a href="https://github.com/fabbit-dev/fabbit"><img src="https://img.shields.io/badge/%D0%B8%D1%81%D1%85%D0%BE%D0%B4%D0%BD%D0%B8%D0%BA%D0%B8-fabbit-2e1101?style=for-the-badge" alt="Исходники прибора"></a>
+  <a href="https://github.com/fabbit-dev/fabbit"><img src="https://img.shields.io/badge/%D0%BF%D1%80%D0%B8%D0%B1%D0%BE%D1%80-fabbit--dev%2Ffabbit-2e1101?style=for-the-badge" alt="Исходники прибора"></a>
 </p>
 
 [Fabbit](https://fabbit.dev): карманный прибор электронщика на ПЛИС. В онлайн-мире Тыкворкинга стоит наш стол. Нажмите на него, и сбоку откроется эта страница. На ней вы переключите профиль прибора, заглянете в плату и увидите стенд на сегодня.
@@ -56,7 +56,7 @@
 
 **Что сейчас.** Список того, что уже запускается на стенде, и над чем работаем. Рядом фото стенда на скрепке: нажмите, и оно откроется крупно.
 
-**Команда.** Рома и Ярик, ссылки на проект, исходники и Telegram.
+**Команда.** Рома и Ярик, ссылки на проект, исходники этой страницы и Telegram.
 
 <p align="center">
   <img src="docs/img/page-art.png" width="420" alt="Пиксельные прибор и плата, из которых собрана страница">

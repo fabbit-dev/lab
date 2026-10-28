@@ -5,13 +5,18 @@ import { drawText, textWidth } from './pixfont.js';
 export const W = 64;
 export const H = 48;
 
+// Цвета экрана: RGBA одним 32-битным словом в порядке байт ImageData (little-endian).
+const rgba = (r, g, b) => ((255 << 24) | (b << 16) | (g << 8) | r) >>> 0;
 const COLORS = {
-  bg: [17, 20, 17],
-  fg: [125, 255, 143],
-  dim: [47, 107, 58],
-  white: [255, 247, 236],
-  orange: [232, 132, 60],
+  bg: rgba(17, 20, 17),
+  fg: rgba(125, 255, 143),
+  dim: rgba(47, 107, 58),
+  white: rgba(255, 247, 236),
+  orange: rgba(232, 132, 60),
 };
+
+// Спрайт как список закрашенных точек [x, y, …]: рисовать без разбора строк каждый кадр.
+const points = (rows) => rows.flatMap((row, y) => [...row].flatMap((c, x) => (c === '#' ? [x, y] : [])));
 
 // ── осциллограф ──
 export const WAVES = ['SIN', 'SQR', 'SAW'];
@@ -151,8 +156,9 @@ const HIT = ['.......', '..###..', '.#####.', '.#####.', '.#####.', '.......'];
 export function createScreen(canvas) {
   canvas.width = W;
   canvas.height = H;
-  const g = canvas.getContext('2d');
+  const g = canvas.getContext('2d', { alpha: false });
   const img = g.createImageData(W, H);
+  const px = new Uint32Array(img.data.buffer);
   const reduced = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
   let mode = 'boot';
@@ -166,17 +172,22 @@ export function createScreen(canvas) {
   let raf = 0;
   let visible = true;
 
+  // Кадр собирается в Uint32Array поверх ImageData: одна запись на пиксель, без аллокаций.
   const plot = (x, y, c = COLORS.fg) => {
+    x |= 0;
+    y |= 0;
+    if (x < 0 || y < 0 || x >= W || y >= H) return;
+    px[y * W + x] = c;
+  };
+  const clear = () => px.fill(COLORS.bg);
+  const cache = new Map();
+  const sprite = (rows, x, y, c) => {
+    let pts = cache.get(rows);
+    if (!pts) cache.set(rows, (pts = points(rows)));
     x = Math.round(x);
     y = Math.round(y);
-    if (x < 0 || y < 0 || x >= W || y >= H) return;
-    img.data.set(c, (y * W + x) * 4);
+    for (let i = 0; i < pts.length; i += 2) plot(x + pts[i], y + pts[i + 1], c);
   };
-  const clear = () => {
-    for (let i = 0; i < W * H; i++) img.data.set([...COLORS.bg, 255], i * 4);
-  };
-  const sprite = (rows, x, y, c) =>
-    rows.forEach((row, j) => [...row].forEach((p, i) => p === '#' && plot(x + i, y + j, c)));
   const text = (s, x, y, c) => drawText((px, py) => plot(px, py, c), s, x, y);
   const textRight = (s, y, c) => text(s, W - 1 - textWidth(s), y, c);
 
@@ -262,9 +273,10 @@ export function createScreen(canvas) {
 
   const animated = () => mode === 'boot' || mode === 'retro' || !reduced;
 
+  // dt ограничен 1/30 с: после фриза телефона кролик не пролетает тыкву за один кадр.
   function frame(now) {
     raf = 0;
-    const dt = last ? Math.min((now - last) / 1000, 0.1) : 0;
+    const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 0;
     last = now;
     clock += dt;
     if (mode === 'boot') {

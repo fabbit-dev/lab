@@ -18,6 +18,10 @@ function reserve(stack, variants, render) {
   }
 }
 
+// Сенсорный экран без клавиатуры: подсказка без пробела.
+const touchOnly = () => globalThis.matchMedia?.('(hover: none) and (pointer: coarse)').matches ?? false;
+export const hintFor = (m, touch = touchOnly()) => (touch && m.hintTouch) || m.hint;
+
 const pct = (v, total) => `${(v / total) * 100}%`;
 const place = (el, r, total) => {
   el.style.left = pct(r.x, total.w);
@@ -46,11 +50,18 @@ export function initDevice(root = document) {
     screen.setMode(id);
     for (const t of tabs) t.setAttribute('aria-pressed', String(t.dataset.mode === id));
     desc.textContent = MODES[id].desc;
-    hint.textContent = MODES[id].hint;
-    canvas.setAttribute('aria-label', `Экран Fabbit: ${MODES[id].tab}. ${MODES[id].hint}`);
+    const h = hintFor(MODES[id]);
+    hint.textContent = h;
+    canvas.setAttribute('aria-label', `Экран Fabbit: ${MODES[id].tab}. ${h}`);
   };
   for (const t of tabs) t.addEventListener('click', () => select(t.dataset.mode));
-  canvas.addEventListener('click', () => screen.tap());
+  // pointerdown вместо click: на телефоне click приходит после отпускания пальца и паузы,
+  // прыжок опаздывает. Клавиатура идёт отдельно через keydown.
+  canvas.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    screen.tap();
+  });
   canvas.addEventListener('keydown', (e) => {
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
