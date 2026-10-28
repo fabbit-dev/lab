@@ -34,6 +34,7 @@ export const PALETTE = {
   // провода и мелочи
   red: '#fc4a41',
   blue: '#5b6ee1',
+  muted: '#806a4e',
   // не из мира: зелёный люминофор экрана Fabbit
   screenGreen: '#7dff8f',
   screenDim: '#2f6b3a',
