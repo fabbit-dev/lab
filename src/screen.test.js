@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { wave, uartBits, uartTrack, createRunner, jump, stepRunner, WAVES } from './screen.js';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { wave, uartBits, uartTrack, createRunner, jump, stepRunner, WAVES, LOGO_BUNNY, collides } from './screen.js';
 import { drawText, textWidth, glyph } from './pixfont.js';
 
 describe('осциллограф', () => {
@@ -45,14 +47,34 @@ describe('ретро: кролик и тыквы', () => {
     expect(r.hit).toBeLessThanOrEqual(0);
     expect(r.score).toBe(0);
   });
-  it('прыжок вовремя даёт очко', () => {
-    const r = createRunner();
-    for (let i = 0; i < 600 && r.score === 0 && r.hit <= 0; i++) {
-      const o = r.obstacles[0];
-      if (o && o.x < 22 && o.x > 17) jump(r);
-      stepRunner(r, 1 / 60, never);
+  it('окно для прыжка: не меньше 6 px пути тыквы дают очко', () => {
+    const wins = [];
+    for (let at = 0; at <= 50; at++) {
+      const r = createRunner();
+      for (let i = 0; i < 600 && r.score === 0 && r.hit <= 0; i++) {
+        const o = r.obstacles[0];
+        if (o && o.x <= at) jump(r);
+        stepRunner(r, 1 / 60, never);
+      }
+      if (r.score === 1) wins.push(at);
     }
-    expect(r.score).toBe(1);
+    expect(wins.length).toBeGreaterThanOrEqual(6);
+  });
+});
+
+describe('кролик с лого', () => {
+  const logo = readFileSync(path.resolve(__dirname, '../public/img/logo.svg'), 'utf8');
+  it('заставка: пиксель в пиксель как кролик в logo.svg', () => {
+    const px = new Set([...logo.matchAll(/M(\d+) (\d+)h(\d+)/g)].flatMap(([, x, y, w]) =>
+      Array.from({ length: Number(w) }, (_, i) => `${Number(x) + i},${y}`)));
+    LOGO_BUNNY.forEach((row, y) => [...row].forEach((c, x) => expect(px.has(`${x},${y}`), `${x},${y}`).toBe(c === '#')));
+  });
+  it('в игре тот же кролик, столкновение по пикселям', () => {
+    const r = createRunner();
+    expect(collides(r, { x: 30 })).toBe(false);
+    expect(collides(r, { x: 10 })).toBe(true);
+    r.y = -20;
+    expect(collides(r, { x: 10 })).toBe(false);
   });
 });
 
