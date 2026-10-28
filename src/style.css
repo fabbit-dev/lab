@@ -27,6 +27,7 @@
   --gap-page: var(--s5);   /* между панелями */
   --pad-panel: var(--s4);  /* внутри панели */
   --gap-stack: var(--s4);  /* между блоками в панели */
+  --gap-tight: var(--s2);  /* внутри блока: метка и текст, картинка и подпись */
   --gap-row: var(--s2);    /* между кнопками */
 
   /* пиксели: --k целый масштаб спрайтов, --px один пиксель спрайта, он же толщина рамки */
@@ -59,10 +60,21 @@ h1, h2, h3 { text-wrap: balance; }
 p, li { text-wrap: pretty; }
 a { color: inherit; text-underline-offset: .2em; }
 button, a, canvas { touch-action: manipulation; }
-/* курсор: пиксельный щуп, остриё в точке 1,1 */
-html { cursor: url(/img/cursor.png) 1 1, auto; cursor: image-set(url(/img/cursor.png) 1x, url(/img/cursor@2x.png) 2x) 1 1, auto; }
-button, a, canvas, [role='button'] { cursor: inherit; }
+/* курсоры: пиксельная стрелка и рука в масштабе 2 (art/page/cursor.js, pointer.js) */
+html {
+  cursor: url(/img/cursor@2x.png) 1 1, auto;
+  cursor: image-set(url(/img/cursor@2x.png) 1x, url(/img/cursor@4x.png) 2x) 1 1, auto;
+}
+a, button, [role='button'], .photo__open {
+  cursor: url(/img/pointer@2x.png) 11 1, pointer;
+  cursor: image-set(url(/img/pointer@2x.png) 1x, url(/img/pointer@4x.png) 2x) 11 1, pointer;
+}
 img.pix, canvas.pix { image-rendering: pixelated; image-rendering: crisp-edges; }
+/* Блоки текста обрезаны по прописным и базовой линии (text-box), поэтому отступы
+   между ними равны видимым. Без поддержки остаётся межстрочный: зазоры чуть больше. */
+h1, h2, h3, p, figcaption, .tag, .badge, .btn, .team__who > * {
+  text-box: trim-both cap alphabetic;
+}
 :focus-visible { outline: var(--px) solid var(--outline); outline-offset: var(--px); }
 
 /* ── пиксельная рамка: тень в 1 пиксель спрайта с четырёх сторон, углы срезаны.
@@ -90,13 +102,13 @@ img.pix, canvas.pix { image-rendering: pixelated; image-rendering: crisp-edges; 
   padding-block: var(--s5) var(--gap-page);
 }
 .top__logo { display: block; width: calc(80px * 2); height: auto; }
-.top__tag { line-height: 1; }
+.top__tag { line-height: var(--s4); }
 
 main { display: grid; gap: var(--gap-page); }
 
 .intro { display: grid; gap: var(--gap-row); justify-items: start; }
-.lead { --bg: var(--paper); padding: var(--s3) var(--s4); }
-.badge { --bg: var(--leaf); padding: var(--s1) var(--s2); line-height: var(--s4); color: var(--cream); }
+.lead { --bg: var(--paper); padding: var(--s4); }
+.badge { --bg: var(--leaf); padding: var(--s2); color: var(--cream); }
 
 .panel { display: grid; gap: var(--gap-stack); align-content: start; padding: var(--pad-panel); }
 .panel__title { font-size: var(--t-title); line-height: var(--lh-title); font-weight: 400; color: var(--leaf); }
@@ -107,7 +119,7 @@ main { display: grid; gap: var(--gap-page); }
   --bg: var(--paper);
   appearance: none; border: 0;
   display: inline-flex; align-items: center;
-  min-height: var(--control); padding: 0 var(--s3); cursor: inherit;
+  min-height: var(--control); padding: 0 var(--s3);
   font: inherit; line-height: var(--s4); color: var(--text); text-decoration: none;
   transition: transform .08s, background-color .08s;
 }
@@ -119,13 +131,12 @@ main { display: grid; gap: var(--gap-page); }
 .btn--main:hover { --bg: var(--leaf-hover); }
 
 /* ── картинка с подписью: прибор, плата ── */
-.figure { display: grid; gap: var(--s3); justify-items: center; }
+.figure { display: grid; gap: var(--gap-stack); justify-items: center; }
+.figure > figcaption { display: grid; gap: var(--gap-tight); justify-items: center; text-align: center; }
 .device, .board { position: relative; width: calc(82px * var(--k-art, var(--k))); }
 .device > img, .board > img { display: block; width: 100%; height: auto; }
 .device__screen { position: absolute; }
-.hint { color: var(--rust); text-align: center; }
-
-.caption { display: grid; gap: var(--s2); }
+.hint { color: var(--rust); }
 .note { color: var(--text-2); }
 
 /* Блок с переменным текстом: невидимые копии всех вариантов в той же ячейке держат
@@ -143,25 +154,31 @@ main { display: grid; gap: var(--gap-page); }
 }
 b, strong { font-weight: 400; }
 .node:hover { outline: 2px dashed var(--cream); outline-offset: -2px; }
-.node:focus-visible { outline: var(--px) dashed var(--cream); outline-offset: calc(-1 * var(--px)); }
+.node/* Блоки текста обрезаны по прописным и базовой линии (text-box), поэтому отступы
+   между ними равны видимым. Без поддержки остаётся межстрочный: зазоры чуть больше. */
+h1, h2, h3, p, figcaption, .tag, .badge, .btn, .team__who > * {
+  text-box: trim-both cap alphabetic;
+}
+:focus-visible { outline: var(--px) dashed var(--cream); outline-offset: calc(-1 * var(--px)); }
 .node[aria-pressed='true'] {
   z-index: 1;
   outline: var(--px) solid var(--gold); outline-offset: 0;
   box-shadow: 0 0 0 999px rgb(46 17 1 / .45);
 }
-.node-card { display: grid; gap: var(--s3); align-content: start; }
-.node-info { display: grid; gap: var(--s1); align-content: start; }
+.node-card { display: grid; gap: var(--gap-stack); align-content: start; }
+.node-info { display: grid; gap: var(--gap-tight); align-content: start; }
 .node-info__title { font-size: var(--t-title); line-height: var(--lh-title); font-weight: 400; color: var(--rust); }
 .node-info__spec { color: var(--text-2); }
 
 /* ── статус ── */
-.status { display: grid; gap: var(--s3); align-content: start; }
-.status li { display: grid; gap: var(--s1); justify-items: start; }
-.tag { padding: var(--s1) var(--s2); line-height: var(--s4); color: var(--cream); background: var(--rust); }
+.status { display: grid; gap: var(--gap-stack); align-content: start; }
+.status li { display: grid; gap: var(--gap-tight); justify-items: start; }
+.tag { padding: var(--s2); color: var(--cream); background: var(--rust); }
 .tag--ok { background: var(--leaf); }
 
 /* ── фото стенда на скрепке ── */
-.photo { position: relative; display: grid; gap: var(--s3); justify-items: start; padding-top: var(--s4); }
+.photo { position: relative; display: grid; gap: var(--gap-stack); justify-items: start; padding-top: var(--s4); }
+/* скрепка выходит над фото на --s4: это место и держит padding-top */
 .photo__clip {
   position: absolute; z-index: 1; top: 0; left: var(--s5);
   width: calc(19px * 2); height: calc(42px * 2);
@@ -175,7 +192,7 @@ b, strong { font-weight: 400; }
 }
 .photo__open:hover { transform: rotate(0deg) scale(1.02); }
 .photo__img { display: block; width: 100%; max-width: 360px; height: auto; }
-.photo__caption { display: flex; flex-wrap: wrap; gap: 0 var(--s3); }
+.photo__caption { display: flex; flex-wrap: wrap; gap: var(--gap-tight) var(--s3); }
 
 .zoom {
   --bg: var(--cream);
@@ -185,19 +202,21 @@ b, strong { font-weight: 400; }
 }
 .zoom::backdrop { background: rgb(46 17 1 / .7); }
 .zoom[open] { display: grid; gap: var(--s3); justify-items: end; }
+.zoom > form { display: contents; }
 .zoom__img { display: block; width: 100%; max-height: calc(100vh - 120px); height: auto; object-fit: contain; }
 
 /* ── команда ── */
-.team { display: grid; gap: var(--s3); }
-.team li { display: flex; align-items: center; gap: var(--s3); }
+.team { display: grid; gap: var(--gap-stack); }
+.team li { display: flex; align-items: center; gap: var(--s4); }
 .team img { flex: none; width: 80px; height: 80px; }
-.team__who { display: grid; min-width: 0; }
+.team__who { display: grid; gap: var(--gap-tight); min-width: 0; }
 .team__role { color: var(--text-2); }
 
 .foot {
-  display: flex; align-items: center; gap: var(--s3);
-  padding-block: var(--s6);
+  display: flex; align-items: center; gap: var(--s4);
+  padding-block: var(--gap-page) var(--s6);
 }
+.foot__text { display: grid; gap: var(--gap-tight); min-width: 0; }
 .foot__bunny { flex: none; width: calc(32px * 2); height: calc(32px * 2); }
 
 /* узкая вкладка: прибор 82 × 2 вместо 82 × 3, иначе не влезает в панель */
@@ -218,7 +237,7 @@ b, strong { font-weight: 400; }
   #device { --k-art: 4; grid-area: device; grid-template-rows: auto auto 1fr auto; }
   #device .figure { align-content: center; }
   #inside { grid-area: inside; }
-  #status { grid-area: status; grid-template-columns: 1fr auto; grid-template-rows: auto 1fr; column-gap: var(--s6); }
+  #status { grid-area: status; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto 1fr; column-gap: var(--s7); }
   #status .panel__title, #status .status { grid-column: 1; }
   #status .photo { grid-column: 2; grid-row: 1 / span 2; }
   #team { grid-area: team; }
